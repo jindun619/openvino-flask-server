@@ -1,20 +1,25 @@
 import sys
 from PIL import Image
+import requests
+import torch
+from transformers import AutoProcessor, LlavaForConditionalGeneration
 
-def process_image(image_path, text):
-    with Image.open(image_path) as img:
-        width, height = img.size
+def use_llava(image, text):
+    model_id = "bczhou/tiny-llava-v1-hf"
+    prompt = "USER: <image>\nDescribe the image briefly\nASSISTANT:"
 
-    result = f"Text: {text}, Image Size: {width}x{height}"
-    return result
+    model = LlavaForConditionalGeneration.from_pretrained(
+        model_id,
+        torch_dtype=torch.float16,
+        low_cpu_mem_usage=True,
+    ).to(0)
 
-if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python process.py <image_path> <text>")
-        sys.exit(1)
+    processor = AutoProcessor.from_pretrained(model_id)
 
-    image_path = sys.argv[1]
-    text = sys.argv[2]
+    inputs = processor(prompt, image, return_tensors='pt').to(0, torch.float16)
 
-    output = process_image(image_path, text)
-    print(output)
+    output_tensor = model.generate(**inputs, max_new_tokens=200, do_sample=False)
+
+    output_text = processor.batch_decode(output_tensor, skip_special_tokens=True)[0]
+
+    return output_text
