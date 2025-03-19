@@ -55,3 +55,22 @@ docs의 requirements and installation에서 설명한대로 새로운 conda 환�
 
 - "/process" 엔드포인트에 body를 ("image", "text")를 필수로 받았었는데, "text"는 선택으로 받게 바꿨다("text"가 없을 시 None값으로 설정)
 - Featurize 특성상 `/home/featurize/work`이하의 디렉토리를 제외한 모든 파일들은 재부팅 시 사라졌는데, transformer cache파일 경로를 `/home/featurize/work/openvino-flask-server/model_cache`으로 설정하니 재부팅마다 모델을 재다운받는 불편한 일이 없어졌다.
+
+# 2025-03-19
+
+## 오늘 한 일 ✅
+
+- 다음과 같은 코드 작성:
+    1. 클라이언트에서 **(이미지/객체)** 또는 **이미지**를 받아온다.
+    2. **이미지/객체**를 받았다면:  
+    - 객체가 `dangerous_objects` 리스트에 있는지 확인한다.  
+    - 있으면 `content_danger` 프롬프트 적용, 없으면 `content_safe` 프롬프트 적용.  
+    3. **이미지**를 받았다면:  
+    - CLIP 모델로 객체를 인식하고, 정확도가 가장 높은 객체를 추출한다.  
+    - 이후 2번 과정과 동일하게 진행.
+
+## 🎯 다음 목표
+
+- 같은 환경에서 deepseek와 bczhou 두 모델들의 성능 비교 및 기록하기.
+- featurize에서 transformers의 모델 캐싱에 실패했는데, 캐싱을 통해 모델 불러오는 시간을 단축하는 방법 연구하기.
+- Openvino로 가속화 하는 방법 연구하기.

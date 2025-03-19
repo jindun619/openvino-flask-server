@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from PIL import Image
 import io
-from process2 import use_llava
+# from process2 import use_llava
+from zzh import use_deepseek
 
 app = Flask(__name__)
 
@@ -32,7 +33,7 @@ def process_image():
         image_bytes = io.BytesIO(image_file.read())
         image = Image.open(image_bytes).convert("RGB")
 
-        output = use_llava(image, text_data)
+        output = use_deepseek(image, text_data)
         return jsonify({"result": output})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

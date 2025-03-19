@@ -1,11 +1,11 @@
 # pip install git+https://github.com/deepseek-ai/DeepSeek-VL
 
+import os
 import torch
 from transformers import AutoModelForCausalLM
 
 from deepseek_vl.models import VLChatProcessor, MultiModalityCausalLM
 from deepseek_vl.utils.io import load_pil_images
-
 
 # specify the path to the model
 model_path = "deepseek-ai/deepseek-vl-7b-chat"
@@ -29,7 +29,7 @@ conversation = [
     {
         "role": "User",
         "content": content,
-        "images": ["./images/car.jpg"]
+        "images": ["../images/car.jpg"]
     },
     {
         "role": "Assistant",
