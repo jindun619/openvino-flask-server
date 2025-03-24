@@ -8,7 +8,7 @@ def use_bczhou(image, object):
     model_id = "bczhou/tiny-llava-v1-hf"
 
     # prompt = "USER: <image>\nDescribe the image briefly\nASSISTANT:"
-    prompt = (
+    prompt =  (
     "USER: <image> This image belongs to the category: {category}. "
     "You are an AI assistant designed to help visually impaired individuals navigate indoor spaces safely. "
     "Do NOT describe the entire scene. ONLY output the conclusion. "

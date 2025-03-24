@@ -74,3 +74,37 @@ docs의 requirements and installation에서 설명한대로 새로운 conda 환�
 - 같은 환경에서 deepseek와 bczhou 두 모델들의 성능 비교 및 기록하기.
 - featurize에서 transformers의 모델 캐싱에 실패했는데, 캐싱을 통해 모델 불러오는 시간을 단축하는 방법 연구하기.
 - Openvino로 가속화 하는 방법 연구하기.
+
+# 2025-03-24
+
+## 오늘 한 일 ✅
+
+## 1. 패키지 버전 관리
+
+- 버전 충돌 해결: `torch==2.2.2`, `transformers==4.38.2` 호환성 맞춤
+- 주요 패키지 버전:
+    - Python 3.11.8
+    - Flask 3.1.0
+    - Pillow 10.3.0
+    - Featurize 플랫폼 대응: 모든 설치에 `--user` 옵션 적용 (`pip install --user <패키지>`)
+
+## 2. 프롬프트 생성 시스템 구현
+
+- **객체 감지 파이프라인**:
+- `detected_objects`가 비었을 경우 CLIP 기반 `detect_objects()`로 자동 채움
+- **동적 프롬프트 생성**:
+- `generate_prompt()` 함수가 `dangerous_objects` 포함 여부에 따라:
+  - 위험물 존재 → `dangerous_prompt` 반환 (즉시 경고)
+  - 안전 → `safe_prompt` 반환 (TTS 최적화된 출력)
+
+## 3. 이미지 처리 유틸리티
+
+- `load_image()` 함수 추가:
+- 지원 형식: 파일 경로, 파일 객체, BytesIO, 이미지 URL
+- 멀티포맷 입력 대응 가능
+
+## 🎯 다음 목표
+
+- 같은 환경에서 deepseek와 bczhou 두 모델들의 성능 비교 및 기록하기.
+- featurize에서 transformers의 모델 캐싱에 실패했는데, 캐싱을 통해 모델 불러오는 시간을 단축하는 방법 연구하기.
+- Openvino로 가속화 하는 방법 연구하기.
