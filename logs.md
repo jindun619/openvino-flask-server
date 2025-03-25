@@ -119,3 +119,13 @@ docs의 requirements and installation에서 설명한대로 새로운 conda 환�
 
 - Openvino로 가속화 하는 방법 연구하기.
 - 같은 환경에서 deepseek와 bczhou 두 모델들의 성능 비교 및 기록하기.
+
+# 2025-03-26
+
+## 오늘 한 일 ✅
+
+- 여러 모델들의 기본 추론 시간/Openvino 가속화 추론 시간을 비교 (DeepSeek-VL-7B-Chat, Qwen2.5-VL-7B-Instruct, Llama-3.2-11B-Vision-Instruct)
+
+## 🎯 다음 목표
+
+- Intel CPU/GPU 환경에서 추가 테스트

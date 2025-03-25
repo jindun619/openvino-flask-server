@@ -1,40 +1,37 @@
-# pip install git+https://github.com/deepseek-ai/DeepSeek-VL
-
-import os
-import sys
 import torch
+import sys
+import os
 import time
-from transformers import AutoModelForCausalLM
 
-from deepseek_vl.models import VLChatProcessor, MultiModalityCausalLM
+from transformers import AutoModelForCausalLM
+from deepseek_vl.models import VLChatProcessor
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from utils import load_image, get_gpu_usage
 
-
-# specify the path to the model
 model_path = "deepseek-ai/deepseek-vl-7b-chat"
-vl_chat_processor: VLChatProcessor = VLChatProcessor.from_pretrained(model_path)
+global vl_chat_processor, tokenizer, vl_gpt
 
+# VLChatProcessor 및 Tokenizer 로드
+vl_chat_processor = VLChatProcessor.from_pretrained(model_path)
 tokenizer = vl_chat_processor.tokenizer
 
-vl_gpt: MultiModalityCausalLM = AutoModelForCausalLM.from_pretrained(
-    model_path, trust_remote_code=True
+# 모델 로드 (bfloat16으로 설정 후 GPU로 이동)
+vl_gpt = (
+    AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True)
+    .to(torch.bfloat16)
+    .cuda()
+    .eval()
 )
 
-vl_gpt = vl_gpt.to(torch.bfloat16).cuda().eval()
-
+# OpenVINO 백엔드로 컴파일
 # vl_gpt = torch.compile(
-#     vl_gpt, backend="openvino", options={"device": "CPU", "model_caching": True}
+#     vl_gpt, backend="openvino", options={"device": "GPU", "model_caching": True}
 # )
+# Inductor 백엔드로 컴파일
 vl_gpt = torch.compile(vl_gpt, backend="inductor")
 
-start_time = time.time()
-start_gpu = get_gpu_usage()
-
-
-object = "car"
 content = (
     "<image_placeholder>"
     "The image is captured from a first-person perspective of a visually impaired person. "
@@ -49,17 +46,19 @@ conversation = [
     {"role": "Assistant", "content": ""},
 ]
 
-# load images and prepare for inputs
+start_time = time.time()
+start_gpu = get_gpu_usage()
+
+# 입력 준비
 prepare_inputs = vl_chat_processor(
     conversations=conversation,
     images=[load_image("../images/car.jpg")],
     force_batchify=True,
 ).to(vl_gpt.device)
 
-# run image encoder to get the image embeddings
 inputs_embeds = vl_gpt.prepare_inputs_embeds(**prepare_inputs)
 
-# run the model to get the response
+# 텍스트 생성
 outputs = vl_gpt.language_model.generate(
     inputs_embeds=inputs_embeds,
     attention_mask=prepare_inputs.attention_mask,
@@ -71,13 +70,12 @@ outputs = vl_gpt.language_model.generate(
     use_cache=True,
 )
 
-answer = tokenizer.decode(outputs[0].cpu().tolist(), skip_special_tokens=True)
-print(f"{prepare_inputs['sft_format'][0]}", answer)
+output_text = tokenizer.decode(outputs[0].cpu().tolist(), skip_special_tokens=True)
 
+print(output_text)
 print(f"time: {time.time()-start_time:.2f}")
 print(f"gpu: {get_gpu_usage()-start_gpu:.2f}")
 
-# 0.67 32.36
-# Openvino GPU 0.81 31.49
-# Openvino CPU 0.81 31.49
-# Inductor 0.79 32.36
+# not using Openvino 0.64 32.43
+# using Openvino(CPU) 0.83 32.43
+# using Openvino(GPU) 0.86 32.43
