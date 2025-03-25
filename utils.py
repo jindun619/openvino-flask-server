@@ -3,6 +3,8 @@ import requests
 import io
 from urllib.parse import urlparse
 
+import torch
+
 
 def load_image(input_source, timeout=5):
     """
@@ -43,3 +45,10 @@ def load_image(input_source, timeout=5):
     except Exception as e:
         print(f"Error loading image: {e}")
         return None
+
+
+def get_gpu_usage() -> float:
+    """현재 GPU 메모리 사용량(MB) 반환 (할당된 메모리만)"""
+    if torch.cuda.is_available():
+        return torch.cuda.memory_allocated() / (1024**2)  # MB
+    return 0.0

@@ -1,21 +1,44 @@
 # pip install git+https://github.com/deepseek-ai/DeepSeek-VL
 
 import os
+import sys
 import torch
+import time
 from transformers import AutoModelForCausalLM
 
 from deepseek_vl.models import VLChatProcessor, MultiModalityCausalLM
 from deepseek_vl.utils.io import load_pil_images
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from utils import load_image
+
+start = time.time()
+
 # specify the path to the model
 model_path = "deepseek-ai/deepseek-vl-7b-chat"
 vl_chat_processor: VLChatProcessor = VLChatProcessor.from_pretrained(model_path)
+
+print(f"1: {time.time() - start}")
+start = time.time()
+
 tokenizer = vl_chat_processor.tokenizer
+
+print(f"2: {time.time() - start}")
+start = time.time()
 
 vl_gpt: MultiModalityCausalLM = AutoModelForCausalLM.from_pretrained(
     model_path, trust_remote_code=True
 )
+
+print(f"3: {time.time() - start}")
+start = time.time()
+
 vl_gpt = vl_gpt.to(torch.bfloat16).cuda().eval()
+
+print(f"4: {time.time() - start}")
+start = time.time()
+
 
 object = "car"
 content = (
@@ -28,14 +51,13 @@ content = (
 )
 
 conversation = [
-    {"role": "User", "content": content, "images": ["../images/car.jpg"]},
+    {"role": "User", "content": content},
     {"role": "Assistant", "content": ""},
 ]
 
 # load images and prepare for inputs
-pil_images = load_pil_images(conversation)
 prepare_inputs = vl_chat_processor(
-    conversations=conversation, images=pil_images, force_batchify=True
+    conversations=conversation, images=[load_image("../images/car.jpg")], force_batchify=True
 ).to(vl_gpt.device)
 
 # run image encoder to get the image embeddings
@@ -55,3 +77,6 @@ outputs = vl_gpt.language_model.generate(
 
 answer = tokenizer.decode(outputs[0].cpu().tolist(), skip_special_tokens=True)
 print(f"{prepare_inputs['sft_format'][0]}", answer)
+
+print(f"Interfere: {time.time() - start}")
+start = time.time()

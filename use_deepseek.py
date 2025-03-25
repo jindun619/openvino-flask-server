@@ -2,10 +2,9 @@
 import torch
 import time
 
-from transformers import AutoModelForCausalLM
 from transformers import CLIPProcessor, CLIPModel
-from deepseek_vl.models import VLChatProcessor, MultiModalityCausalLM
-from deepseek_vl.utils.io import load_pil_images
+
+from utils import get_gpu_usage
 
 
 # 정확도가 높은 순서대로 num개의 object 반환
@@ -80,17 +79,10 @@ def generate_prompt(detected_objects, dangerous_objects):
     return prompt
 
 
-def use_deepseek(image, detected_objects):
-    model_path = "deepseek-ai/deepseek-vl-7b-chat"
-    vl_chat_processor: VLChatProcessor = VLChatProcessor.from_pretrained(model_path)
-    tokenizer = vl_chat_processor.tokenizer
-
-    vl_gpt: MultiModalityCausalLM = AutoModelForCausalLM.from_pretrained(
-        model_path, trust_remote_code=True
-    )
-    vl_gpt = vl_gpt.to(torch.bfloat16).cuda().eval()
-
+def use_deepseek(image, detected_objects, vl_chat_processor, tokenizer, vl_gpt):
     start_time = time.time()
+    start_gpu = get_gpu_usage()
+    print("start infering..")
 
     possible_objects = [
         "apple",
@@ -146,7 +138,10 @@ def use_deepseek(image, detected_objects):
 
     output_text = tokenizer.decode(outputs[0].cpu().tolist(), skip_special_tokens=True)
     inference_time = time.time() - start_time
-    print(inference_time)
+    inference_gpu = get_gpu_usage() - start_gpu
+    print("inference finished!")
+    print(f"time: {inference_time:.2f} sec")
+    print(f"gpu usage: {inference_gpu:.2f} MB")
 
     return output_text
 

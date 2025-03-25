@@ -108,3 +108,14 @@ docs의 requirements and installation에서 설명한대로 새로운 conda 환�
 - 같은 환경에서 deepseek와 bczhou 두 모델들의 성능 비교 및 기록하기.
 - featurize에서 transformers의 모델 캐싱에 실패했는데, 캐싱을 통해 모델 불러오는 시간을 단축하는 방법 연구하기.
 - Openvino로 가속화 하는 방법 연구하기.
+
+# 2025-03-25
+
+## 오늘 한 일 ✅
+
+- 서버 시작 시 전역 변수로 DeepSeek 모델 1회 로드해 추론 시간 20초 → 2초로 90% 단축
+
+## 🎯 다음 목표
+
+- Openvino로 가속화 하는 방법 연구하기.
+- 같은 환경에서 deepseek와 bczhou 두 모델들의 성능 비교 및 기록하기.
