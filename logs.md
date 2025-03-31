@@ -129,3 +129,14 @@ docs의 requirements and installation에서 설명한대로 새로운 conda 환�
 ## 🎯 다음 목표
 
 - Intel CPU/GPU 환경에서 추가 테스트
+
+# 2025-04-01
+
+## 오늘 한 일 ✅
+
+- torch.compile()로 deepseek와 llama에 openvino로 가속화를 시도했지만, PyTorch의 dynamic_shapes와 Openvino의 백엔드가 호환되지 않아서 실패. (llava와 같은 멀티모달은 model.language_model, model.vision_model을 컴파일 해야함).
+
+## 🎯 다음 목표
+
+- 다른 Openvino torch.compile()이 호환되는 모델을 찾거나, ONNX 형식으로 변환 시도.
+- Openvino에서 공식적으로 배포한 Openvino IR 모델 시도(https://huggingface.co/OpenVINO/Phi-3.5-vision-instruct-int4-ov)

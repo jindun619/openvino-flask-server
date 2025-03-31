@@ -1,3 +1,5 @@
 model_cache
 __pycache__
 venv
+
+tests/cache
