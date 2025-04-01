@@ -140,3 +140,14 @@ docs의 requirements and installation에서 설명한대로 새로운 conda 환�
 
 - 다른 Openvino torch.compile()이 호환되는 모델을 찾거나, ONNX 형식으로 변환 시도.
 - Openvino에서 공식적으로 배포한 Openvino IR 모델 시도(https://huggingface.co/OpenVINO/Phi-3.5-vision-instruct-int4-ov)
+
+# 2025-04-01
+
+## 오늘 한 일 ✅
+
+- Openvino에서 공식적으로 배포한 Openvino IR 모델 시도(Phi-3.5-vision-instruct-int4-ov). 원본 모델(Phi-3.5-vision-instruct)을 사용해서 비교해보려 했으나 실패.
+
+## 🎯 다음 목표
+
+- 원본 모델(Phi-3.5-vision-instruct)과 가속화된 모델(Phi-3.5-vision-instruct-int4-ov)을 같은 환경에서 벤치마킹.
+- 다른 모델로 torch.compile() 혹은 ONNX, Openvino IR로 변환 시도.
