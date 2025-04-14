@@ -151,3 +151,14 @@ docs의 requirements and installation에서 설명한대로 새로운 conda 환�
 
 - 원본 모델(Phi-3.5-vision-instruct)과 가속화된 모델(Phi-3.5-vision-instruct-int4-ov)을 같은 환경에서 벤치마킹.
 - 다른 모델로 torch.compile() 혹은 ONNX, Openvino IR로 변환 시도.
+
+# 2025-04-14
+
+## 오늘 한 일 ✅
+
+- torch.compile() 방법은 잠시 접어두고(아마 안 쓸 듯), Openvino IR로 변환하는 방법 연구.
+- Openvino IR로 변환을 시도 해봤지만 실패, ONNX로 export 후 Openvino IR로 변환하는 방법도 시도 해봤지만 실패.
+
+## 🎯 다음 목표
+
+- 이어서 Openvino IR로 변환하는 방법을 연구. 변환을 완료했다면 추론까지 실행해보기.
