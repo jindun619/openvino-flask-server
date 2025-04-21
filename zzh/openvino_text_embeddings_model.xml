@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<net name="Model0" version="11">
+	<layers>
+		<layer id="0" name="input" type="Parameter" version="opset1">
+			<data shape="?,?" element_type="i64" />
+			<output>
+				<port id="0" precision="I64" names="input">
+					<dim>-1</dim>
+					<dim>-1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="1" name="self.weight_compressed" type="Const" version="opset1">
+			<data element_type="f16" shape="129280, 1280" offset="0" size="330956800" />
+			<output>
+				<port id="0" precision="FP16" names="self.weight">
+					<dim>129280</dim>
+					<dim>1280</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="2" name="self.weight" type="Convert" version="opset1">
+			<data destination_type="f32" />
+			<rt_info>
+				<attribute name="decompression" version="0" />
+			</rt_info>
+			<input>
+				<port id="0" precision="FP16">
+					<dim>129280</dim>
+					<dim>1280</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="FP32">
+					<dim>129280</dim>
+					<dim>1280</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="3" name="ov_ext::embedding/Convert" type="Convert" version="opset1">
+			<data destination_type="i32" />
+			<input>
+				<port id="0" precision="I64">
+					<dim>-1</dim>
+					<dim>-1</dim>
+				</port>
+			</input>
+			<output>
+				<port id="1" precision="I32">
+					<dim>-1</dim>
+					<dim>-1</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="4" name="ov_ext::embedding/Constant" type="Const" version="opset1">
+			<data element_type="i32" shape="" offset="330956800" size="4" />
+			<output>
+				<port id="0" precision="I32" />
+			</output>
+		</layer>
+		<layer id="5" name="ov_ext::embedding/Gather" type="Gather" version="opset8">
+			<data batch_dims="0" />
+			<input>
+				<port id="0" precision="FP32">
+					<dim>129280</dim>
+					<dim>1280</dim>
+				</port>
+				<port id="1" precision="I32">
+					<dim>-1</dim>
+					<dim>-1</dim>
+				</port>
+				<port id="2" precision="I32" />
+			</input>
+			<output>
+				<port id="3" precision="FP32">
+					<dim>-1</dim>
+					<dim>-1</dim>
+					<dim>1280</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="6" name="Result_8" type="Result" version="opset1">
+			<input>
+				<port id="0" precision="FP32">
+					<dim>-1</dim>
+					<dim>-1</dim>
+					<dim>1280</dim>
+				</port>
+			</input>
+		</layer>
+	</layers>
+	<edges>
+		<edge from-layer="0" from-port="0" to-layer="3" to-port="0" />
+		<edge from-layer="1" from-port="0" to-layer="2" to-port="0" />
+		<edge from-layer="2" from-port="1" to-layer="5" to-port="0" />
+		<edge from-layer="3" from-port="1" to-layer="5" to-port="1" />
+		<edge from-layer="4" from-port="0" to-layer="5" to-port="2" />
+		<edge from-layer="5" from-port="3" to-layer="6" to-port="0" />
+	</edges>
+	<rt_info>
+		<Runtime_version value="2025.1.0-18503-6fec06580ab-releases/2025/1" />
+		<conversion_parameters>
+			<framework value="pytorch" />
+			<is_python_object value="True" />
+		</conversion_parameters>
+	</rt_info>
+</net>
