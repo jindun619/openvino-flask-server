@@ -5,3 +5,5 @@ venv
 tests/cache
 .DS_Store
 .DS_Store
+
+deepseek-vl2-tiny
