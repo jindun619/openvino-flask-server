@@ -35,7 +35,6 @@ def generate_prompt(detected_objects, dangerous_objects):
     is_dangerous = any(obj in dangerous_objects for obj in detected_objects)
 
     if is_dangerous:
-        return f"there is a dangerous object cell phone, please be carefully"
         prompt = (
             "ROLE: You are a vision assistant for the visually impaired. "
             "Analyze both the uploaded image and detected objects list below.\n\n"
@@ -98,7 +97,6 @@ def use_deepseek(image, detected_objects, vl_chat_processor, tokenizer, vl_gpt):
         "crosswalk",
         "bottle",
         "arm",
-        "cell phone"
     ]
     dangerous_objects = [
         "car",
@@ -106,7 +104,6 @@ def use_deepseek(image, detected_objects, vl_chat_processor, tokenizer, vl_gpt):
         "dog",
         "manhole",
         "vehicle",
-        "cell phone"
     ]
 
     if not detected_objects:
