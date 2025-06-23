@@ -35,6 +35,7 @@ def generate_prompt(detected_objects, dangerous_objects):
     is_dangerous = any(obj in dangerous_objects for obj in detected_objects)
 
     if is_dangerous:
+<<<<<<< HEAD
         prompt = (
             # "ROLE: You are a vision assistant for the visually impaired. "
             # "Analyze both the uploaded image and detected objects list below.\n\n"
@@ -54,6 +55,10 @@ def generate_prompt(detected_objects, dangerous_objects):
             # "   - MAX 15 words\n"
             # "   - Add 1s pauses between clauses\n"
             # "   - Example: 'Dark hallway. URGENT: Cart at 3 o'clock. Move right.'"
+=======
+        print("dangerous_prompt used")
+        prompt = (
+>>>>>>> da87c5d (.)
             f"USER: <image_placeholder> This image belongs to the category: {detected_objects[0]}. "
             "You are an AI assistant designed to help visually impaired individuals navigate indoor spaces safely. "
             "Do NOT describe the entire scene. ONLY output the conclusion with all relevant obstacles. "
@@ -63,7 +68,9 @@ def generate_prompt(detected_objects, dangerous_objects):
             "Do NOT add any extra words or descriptions. "
         )
     else:
+        print("safe_prompt used")
         prompt = (
+<<<<<<< HEAD
             # "ROLE: You are a vision assistant for the visually impaired. "
             # "Analyze the uploaded image and provide a brief, safe description.\n\n"
             # "=== INPUT FORMAT ===\n"
@@ -81,6 +88,8 @@ def generate_prompt(detected_objects, dangerous_objects):
             # "4. EXAMPLE OUTPUTS:\n"
             # "   - 'No hazards detected. Kitchen: Sink and refrigerator visible.'\n"
             # "   - 'Caution: Wet floor. Bathroom: Slippery tiles near shower.'"
+=======
+>>>>>>> da87c5d (.)
             f"USER: <image_placeholder> This image belongs to the category: {detected_objects[0]}. "
             "You are an AI assistant designed to help visually impaired individuals navigate indoor spaces safely. "
             "Do NOT describe the entire scene. ONLY output the conclusion with all relevant objects detected. "
@@ -98,7 +107,7 @@ def use_deepseek(image, detected_objects, vl_chat_processor, tokenizer, vl_gpt):
     print("start infering..")
 
     possible_objects = [
-        "apple",
+        "orange",
         "car",
         "person",
         "dog",
@@ -118,13 +127,18 @@ def use_deepseek(image, detected_objects, vl_chat_processor, tokenizer, vl_gpt):
         "dog",
         "manhole",
         "vehicle",
-        "cell phone"
+        "cell phone",
+        "orange"
     ]
 
     if not detected_objects:
         detected_objects = detect_objects(image, possible_objects, 1)[0]
 
+<<<<<<< HEAD
     print(detected_objects[0])
+=======
+    print(detected_objects)
+>>>>>>> da87c5d (.)
     content = generate_prompt(detected_objects, dangerous_objects)
 
     conversation = [
@@ -157,6 +171,6 @@ def use_deepseek(image, detected_objects, vl_chat_processor, tokenizer, vl_gpt):
     inference_gpu = get_gpu_usage() - start_gpu
     print("inference finished!")
     print(f"time: {inference_time:.2f} sec")
-    print(f"gpu usage: {inference_gpu:.2f} MB")
+    # print(f"gpu usage: {inference_gpu:.2f} MB")
 
     return output_text
